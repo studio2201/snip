@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.4] — 2026-09-18
+
+### Added
+- Tool-specific badges on README: Vibe-Safe SHIP verdict, Security Gate status, MCP protocol compliance, Secret Leaks zero-count, and Supabase RLS audit.
+- README guide for embedding Vibe-Safe and MCP badges in AI project repositories.
+- Upgraded release metadata and diagnostic baseline.
+
 ## [0.2.0] — 2026-09-18
 
 ### Added

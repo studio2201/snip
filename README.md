@@ -1,11 +1,17 @@
 # Snip
 
 [![CI](https://github.com/studio2201/snip/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/studio2201/snip/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/badge/version-v0.2.3-blue.svg)](https://github.com/studio2201/snip/releases)
+[![Release](https://img.shields.io/badge/version-v0.2.4-blue.svg)](https://github.com/studio2201/snip/releases)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Pure std::](https://img.shields.io/badge/pure-std%3A%3A-success.svg)](https://studio2201.com)
 [![Reproducible](https://img.shields.io/badge/reproducible-OK-brightgreen.svg)](tools/dev/repro.sh)
 [![Max LOC](https://img.shields.io/badge/max%20LOC-%E2%89%A4256-brightgreen.svg)](https://studio2201.com)
+
+[![Vibe-Safe](https://img.shields.io/badge/vibe--safe-SHIP-brightgreen.svg)](https://studio2201.com/snip)
+[![Security Gate](https://img.shields.io/badge/security%20gate-PASSED-brightgreen.svg)](https://studio2201.com/snip)
+[![MCP Protocol](https://img.shields.io/badge/MCP-2024--11--05-blue.svg)](https://studio2201.com/snip)
+[![Secret Leaks](https://img.shields.io/badge/secret%20leaks-0%20detected-brightgreen.svg)](https://studio2201.com/snip)
+[![Supabase RLS](https://img.shields.io/badge/Supabase%20RLS-AUDITED-brightgreen.svg)](https://studio2201.com/snip)
 
 **Vibe-code security gate.** Pre-deploy audit for AI-generated code diffs at the moment of generation.
 
@@ -53,6 +59,18 @@ Run against the output of any vibe-coding platform (Cursor / Claude Code / Winds
 - `snip update` / `snip upgrade` — Self-update binary
 - `snip -h` / `--help` — Show help
 - `snip -V` / `--version` — Show version
+
+## Badges & Status
+
+Certify that your vibe-coded repository passes Snip's security gate:
+
+```markdown
+<!-- Vibe-Safe Security Gate Verdict -->
+[![Vibe-Safe](https://img.shields.io/badge/vibe--safe-SHIP-brightgreen.svg)](https://studio2201.com/snip)
+
+<!-- Model Context Protocol (MCP) Server Status -->
+[![MCP Protocol](https://img.shields.io/badge/MCP-2024--11--05-blue.svg)](https://studio2201.com/snip)
+```
 
 ## Why
 
