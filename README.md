@@ -2,7 +2,7 @@
 
 **Vibe-code security gate.** Pre-deploy audit at the moment of generation.
 
-**Status:** pre-release scaffold (2026-09-17). No source code yet.
+**Status:** v0.2.0 release (2026-09-18).
 
 ## What it does
 
