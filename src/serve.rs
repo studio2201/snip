@@ -3,23 +3,77 @@ use snip::{check, emit_generic_text, Diff, Policy};
 use std::io::{self, BufRead};
 
 fn extract_str(line: &str, key: &str) -> Option<String> {
-    let k = format!("\"{}\":", key);
-    if let Some(p) = line.find(&k) {
-        let rest = line[p + k.len()..].trim_start();
-        if let Some(stripped) = rest.strip_prefix('"') {
-            if let Some(end) = stripped.find('"') {
-                return Some(stripped[..end].to_string());
+    let key_pat = format!("\"{}\"", key);
+    let mut search_from = 0;
+    while let Some(pos) = line[search_from..].find(&key_pat) {
+        let abs_pos = search_from + pos + key_pat.len();
+        let after_key = &line[abs_pos..];
+        let trimmed_after = after_key.trim_start();
+        if let Some(after_colon) = trimmed_after.strip_prefix(':') {
+            let val_part = after_colon.trim_start();
+            if let Some(stripped) = val_part.strip_prefix('"') {
+                let mut out = String::new();
+                let mut chars = stripped.chars();
+                let mut closed = false;
+                while let Some(c) = chars.next() {
+                    if c == '\\' {
+                        match chars.next() {
+                            Some('"') => out.push('"'),
+                            Some('\\') => out.push('\\'),
+                            Some('/') => out.push('/'),
+                            Some('n') => out.push('\n'),
+                            Some('r') => out.push('\r'),
+                            Some('t') => out.push('\t'),
+                            Some('b') => out.push('\x08'),
+                            Some('f') => out.push('\x0C'),
+                            Some('u') => {
+                                let hex: String = chars.by_ref().take(4).collect();
+                                if let Ok(cp) = u32::from_str_radix(&hex, 16) {
+                                    if let Some(ch) = char::from_u32(cp) {
+                                        out.push(ch);
+                                        continue;
+                                    }
+                                }
+                                out.push_str("\\u");
+                                out.push_str(&hex);
+                            }
+                            Some(other) => {
+                                out.push('\\');
+                                out.push(other);
+                            }
+                            None => break,
+                        }
+                    } else if c == '"' {
+                        closed = true;
+                        break;
+                    } else {
+                        out.push(c);
+                    }
+                }
+                if closed {
+                    return Some(out);
+                }
             }
         }
+        search_from = abs_pos;
     }
     None
 }
 
 fn extract_id(line: &str) -> String {
-    if let Some(p) = line.find("\"id\":") {
-        let rest = line[p + 5..].trim_start();
-        let end = rest.find(|c: char| c == ',' || c == '}' || c.is_whitespace()).unwrap_or(rest.len());
-        return rest[..end].trim().to_string();
+    if let Some(p) = line.find("\"id\"") {
+        let after_key = &line[p + 4..];
+        let trimmed = after_key.trim_start();
+        if let Some(after_colon) = trimmed.strip_prefix(':') {
+            let rest = after_colon.trim_start();
+            let end = rest
+                .find(|c: char| c == ',' || c == '}' || c.is_whitespace())
+                .unwrap_or(rest.len());
+            let val = rest[..end].trim();
+            if !val.is_empty() {
+                return val.to_string();
+            }
+        }
     }
     "null".to_string()
 }
@@ -30,7 +84,12 @@ fn handle_tools_call(line: &str) -> String {
     let policy = Policy::default();
     let result = check(&diff, &policy);
     let text = emit_generic_text(&result);
-    let escaped = text.replace('\\', "\\\\").replace('\"', "\\\"").replace('\n', "\\n");
+    let escaped = text
+        .replace('\\', "\\\\")
+        .replace('\"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
+        .replace('\t', "\\t");
     format!(
         "{{\"content\":[{{\"type\":\"text\",\"text\":\"{}\"}}],\"isError\":false}}",
         escaped
@@ -73,8 +132,17 @@ pub fn run_server() -> Result<i32, String> {
                 );
             }
             "tools/call" => {
-                let call_result = handle_tools_call(trimmed);
-                println!("{{\"jsonrpc\":\"2.0\",\"id\":{},\"result\":{}}}", id, call_result);
+                let tool_name = extract_str(trimmed, "name").unwrap_or_default();
+                if tool_name != "snip_audit" {
+                    let esc = tool_name.replace('\\', "\\\\").replace('\"', "\\\"");
+                    println!(
+                        "{{\"jsonrpc\":\"2.0\",\"id\":{},\"error\":{{\"code\":-32602,\"message\":\"Unknown tool: {}\"}}}}",
+                        id, esc
+                    );
+                } else {
+                    let call_result = handle_tools_call(trimmed);
+                    println!("{{\"jsonrpc\":\"2.0\",\"id\":{},\"result\":{}}}", id, call_result);
+                }
             }
             _ => {
                 if id != "null" {
