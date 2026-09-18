@@ -6,6 +6,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.5] — 2026-09-18
+
+### Added
+- Expanded documentation in README with authoritative problem descriptions and citations:
+  - GitGuardian State of Secrets Sprawl statistics on AI-generated code leaks.
+  - OWASP Top 10 for Large Language Model Applications (LLM02 and LLM06).
+  - Supabase Row Level Security (RLS) unprotected database vulnerabilities.
+  - Anthropic Model Context Protocol (MCP) specifications.
+- Added comprehensive "How It Works Under the Hood" architectural breakdown.
+- Upgraded release metadata and diagnostic baseline.
+
 ## [0.2.4] — 2026-09-18
 
 ### Added

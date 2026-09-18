@@ -1,7 +1,7 @@
 # Snip
 
 [![CI](https://github.com/studio2201/snip/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/studio2201/snip/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/badge/version-v0.2.4-blue.svg)](https://github.com/studio2201/snip/releases)
+[![Release](https://img.shields.io/badge/version-v0.2.5-blue.svg)](https://github.com/studio2201/snip/releases)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Pure std::](https://img.shields.io/badge/pure-std%3A%3A-success.svg)](https://studio2201.com)
 [![Reproducible](https://img.shields.io/badge/reproducible-OK-brightgreen.svg)](tools/dev/repro.sh)
@@ -15,6 +15,23 @@
 
 **Vibe-code security gate.** Pre-deploy audit for AI-generated code diffs at the moment of generation.
 
+## Why This Matters & Authoritative Research
+
+### 1. The Vibe-Coding Security Blindspot
+AI coding agents (Cursor, Claude Code, Windsurf, Bolt, Lovable, v0) generate full-stack applications in seconds. However, LLMs routinely hallucinate live production credentials into frontend code, emit permissive CORS configurations, and omit database security boundaries.
+- **[GitGuardian State of Secrets Sprawl](https://www.gitguardian.com/state-of-secrets-sprawl)**: Security research reveals that AI-assisted commits leak API keys and secrets at more than double the human baseline (3.2% vs 1.5%).
+- **[OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)**: Specifically targets LLM02 (Insecure Output Handling) and LLM06 (Sensitive Information Disclosure).
+- **[Supabase Row Level Security Advisory](https://supabase.com/docs/guides/database/postgres/row-level-security)**: Unprotected PostgreSQL tables created without `ENABLE ROW LEVEL SECURITY` expose entire customer databases to public anon API keys.
+- **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/)**: Open specification allowing AI coding assistants to invoke external verification tools dynamically before saving files.
+
+## How It Works Under the Hood
+
+1. **Streaming Diff Lexer (`src/audit.rs`)**: Reads unified git diffs from stdin or file paths, focusing strictly on added lines (`+`) to prevent reviewing unchanged legacy code.
+2. **High-Confidence Credential Patterns**: Zero-dependency pattern matcher detecting live Stripe (`sk_live_`), OpenAI (`sk-proj-`), GitHub (`ghp_`), AWS Access Keys (`AKIA`), Anthropic (`sk-ant-`), and PEM private keys.
+3. **Database RLS Enforcer**: Inspects SQL migration diffs for table definitions lacking explicit Row Level Security enforcement.
+4. **Deterministic Policy Gate (`src/gate.rs`)**: Emits `SHIP` (exit 0) when clean, `FIX` (exit 1) for warnings, or `BLOCK` (exit 1) on critical leaks.
+5. **Native Model Context Protocol Server (`src/serve.rs`)**: Runs as a stdio MCP JSON-RPC server (`snip serve --mcp`), allowing Cursor and Claude to run pre-commit diff gates automatically.
+
 ## Quick Start
 
 ```bash
@@ -24,8 +41,14 @@ curl -fsSL https://studio2201.com/install.sh | sh -s snip
 # Audit staged git diff
 git diff --staged | snip audit
 
+# Audit directory or path
+snip check --path ./src
+
 # Run as Model Context Protocol (MCP) server for Cursor / Claude
 snip serve --mcp
+
+# Run system diagnostics
+snip doctor
 ```
 
 ## GitHub Action Usage
@@ -39,16 +62,6 @@ Gate pull requests against credential leaks and broken RLS policies:
     path: '.'
     format: 'text'
 ```
-
-## What it does
-
-Run against the output of any vibe-coding platform (Cursor / Claude Code / Windsurf / Cline / Bolt / Lovable / Replit / v0). Emits a "Ship / Fix / Block" verdict:
-
-- Hardcoded API keys (Stripe, OpenAI, GitHub, AWS, Anthropic…)
-- Unauthenticated public endpoints
-- Missing CSP / permissive CORS headers
-- Accidental PQC bypasses
-- Broken Supabase Row Level Security (RLS)
 
 ## CLI Commands
 
@@ -71,12 +84,6 @@ Certify that your vibe-coded repository passes Snip's security gate:
 <!-- Model Context Protocol (MCP) Server Status -->
 [![MCP Protocol](https://img.shields.io/badge/MCP-2024--11--05-blue.svg)](https://studio2201.com/snip)
 ```
-
-## Why
-
-- GitGuardian 2026: 3.2% of AI-assisted commits leak credentials vs 1.5% baseline.
-- 21% of AI-generated apps carry security bugs.
-- Pure Rust, `std::` only. Zero crates.io dependencies. Strictly <= 256 LOC per source file.
 
 ## License
 
