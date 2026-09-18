@@ -1,0 +1,33 @@
+name: 'Snip Vibe-Code Security Gate'
+description: 'Audits code diffs and files for credentials, CORS, and Supabase RLS'
+author: 'studio2201'
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  path:
+    description: 'Path or file to audit'
+    required: false
+    default: '.'
+  format:
+    description: 'Output format (text, json, cursor)'
+    required: false
+    default: 'text'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Build snip
+      shell: bash
+      run: |
+        cargo build --release --manifest-path "${{ github.action_path }}/Cargo.toml"
+        echo "${{ github.action_path }}/target/release" >> $GITHUB_PATH
+
+    - name: Run Snip Audit
+      shell: bash
+      run: |
+        snip check --path "${{ inputs.path }}" --format "${{ inputs.format }}"
