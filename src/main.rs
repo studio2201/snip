@@ -87,7 +87,15 @@ fn run() -> Result<i32, CliError> {
             }
             Ok(code)
         }
-        Subcommand::Update => update::run_update("snip", VERSION).map_err(CliError::Runtime),
+        Subcommand::Update => {
+            let (code, output) =
+                update::run_update("snip", VERSION, config.format)
+                    .map_err(CliError::Runtime)?;
+            if !config.quiet || config.output_file.is_some() {
+                write_output(&output, config.output_file.as_ref())?;
+            }
+            Ok(code)
+        }
         Subcommand::Serve => serve::run_server().map_err(CliError::Runtime),
         Subcommand::Audit => run_audit(&config),
     }
