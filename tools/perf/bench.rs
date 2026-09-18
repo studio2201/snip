@@ -1,10 +1,10 @@
-//! tools/perf/bench.rs — §18 bench harness for snip.
-//!
-//! Lives as a `#[test]` in tests/integration.rs via `include!` so it is
-//! exercised by `cargo test --release perf_snip_check_within_budget`.
-//! Honors §18: std::time only, median-of-5, line-oriented output.
-//!
-//! Budget: snip check on 200 KiB diff ≤ 400 ms median ±25%.
+// tools/perf/bench.rs — §18 bench harness for snip.
+//
+// Lives as a `#[test]` in tests/integration.rs via `include!` so it is
+// exercised by `cargo test --release perf_snip_check_within_budget`.
+// Honors §18: std::time only, median-of-5, line-oriented output.
+//
+// Budget: snip check on 200 KiB diff ≤ 400 ms median ±25%.
 
 use std::time::Instant;
 
@@ -42,5 +42,16 @@ fn perf_snip_check_within_budget() {
 }
 
 // Fixture builders — synthetic, committed (per §18-C5).
-fn synth_diff_with_size(_bytes: usize) -> snip::Diff { unimplemented!() }
-fn policy() -> snip::Policy { unimplemented!() }
+fn synth_diff_with_size(bytes: usize) -> snip::Diff {
+    let mut raw = String::with_capacity(bytes);
+    raw.push_str("diff --git a/src/app.ts b/src/app.ts\n--- a/src/app.ts\n+++ b/src/app.ts\n@@ -1,1 +1,500 @@\n");
+    let line = "+  const configSetting = 'safe-synthetic-token-value-abc';\n";
+    while raw.len() < bytes {
+        raw.push_str(line);
+    }
+    snip::Diff::from_raw(&raw)
+}
+
+fn policy() -> snip::Policy {
+    snip::Policy::default()
+}

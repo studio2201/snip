@@ -6,8 +6,15 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-09-18
+
 ### Added
-- (placeholder — next iteration's changes land here)
+- Working pure `std::` Rust implementation of Snip vibe-code security gate.
+- Fast static pass auditing diffs for leaked secrets (OpenAI, AWS, Stripe, GitHub, private keys), broken Supabase RLS, and permissive CORS.
+- Immediate Ship/Fix/Block verdict evaluation with policy thresholds.
+- Cursor dialect, generic terminal text, and JSON structured reporting.
+- Standardized CLI flags: `-h/--help`, `-V/--version`, `--format`, `-o/--output`, `-q/--quiet`, `-v/--verbose`.
+- Performance test verifying 200 KiB diff audited in < 0.5ms (budget 400ms).
 
 ## [0.1.2] — 2026-09-17
 
