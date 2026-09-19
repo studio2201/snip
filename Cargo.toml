@@ -1,6 +1,6 @@
 [package]
 name = "snip"
-version = "0.2.7"
+version = "0.2.8"
 edition = "2021"
 publish = false
 description = "Vibe-code security gate"
