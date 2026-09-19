@@ -1,17 +1,8 @@
 # Snip
 
-[![CI](https://github.com/studio2201/snip/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/studio2201/snip/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/badge/version-v0.2.6-blue.svg)](https://github.com/studio2201/snip/releases)
+[![studio2201 Suite](https://img.shields.io/badge/studio2201-5%2F5%20Verified-2f6f5e?logo=shield)](https://studio2201.com/agents#badges)
+[![Release](https://img.shields.io/badge/version-v0.2.7-blue.svg)](https://github.com/studio2201/snip/releases)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Pure std::](https://img.shields.io/badge/pure-std%3A%3A-success.svg)](https://studio2201.com)
-[![Reproducible](https://img.shields.io/badge/reproducible-OK-brightgreen.svg)](tools/dev/repro.sh)
-[![Max LOC](https://img.shields.io/badge/max%20LOC-%E2%89%A4256-brightgreen.svg)](https://studio2201.com)
-
-[![Vibe-Safe](https://img.shields.io/badge/vibe--safe-SHIP-brightgreen.svg)](https://studio2201.com/snip)
-[![Security Gate](https://img.shields.io/badge/security%20gate-PASSED-brightgreen.svg)](https://studio2201.com/snip)
-[![MCP Protocol](https://img.shields.io/badge/MCP-2024--11--05-blue.svg)](https://studio2201.com/snip)
-[![Secret Leaks](https://img.shields.io/badge/secret%20leaks-0%20detected-brightgreen.svg)](https://studio2201.com/snip)
-[![Supabase RLS](https://img.shields.io/badge/Supabase%20RLS-AUDITED-brightgreen.svg)](https://studio2201.com/snip)
 
 **Vibe-code security gate.** Pre-deploy audit for AI-generated code diffs at the moment of generation.
 
