@@ -56,14 +56,13 @@ Configure Snip in your repository via an AI coding assistant or directly add the
 Copy and paste this prompt to Cursor, Claude Code, Copilot Workspace, or Devin:
 
 ```text
-Add a GitHub Actions workflow to this repository at .github/workflows/snip.yml using studio2201/studio2201@v1:
+Add a GitHub Actions workflow to this repository at .github/workflows/snip.yml using studio2201/snip@v1:
 - Name: snip
 - Triggers: pull_request, push to default branch (master/main), and workflow_dispatch.
 - Concurrency: group ${{ github.workflow }}-${{ github.ref }} with cancel-in-progress on pull_request.
 - Permissions: contents: read, checkout with fetch-depth: 0.
-- Action: run studio2201/studio2201@v1 with tools: 'snip' and fail-on: 'block'.
-- Artifacts: upload snip_report.md using actions/upload-artifact@v4 with if: always().
-- README Scorecard: embed the studio2201 Centered Scorecard table at top of README.md (specs: studio2201.com/agents).
+- Action: run studio2201/snip@v1.
+- Artifacts: upload snip_summary.md using actions/upload-artifact@v4 with if: always().
 ```
 
 ### GitHub Actions Workflow
@@ -86,11 +85,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: studio2201/studio2201@v1
-        with: { tools: 'snip', fail-on: 'block' }
+      - uses: studio2201/snip@v1
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: snip-report, path: snip_report.md, if-no-files-found: ignore }
+        with: { name: snip-report, path: snip_summary.md, if-no-files-found: ignore }
 ```
 
 ## How It Works Under the Hood
