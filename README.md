@@ -110,8 +110,8 @@ jobs:
 ## Quick Start
 
 ```bash
-# Install via studio2201 installer
-curl -fsSL https://studio2201.com/install.sh | sh -s snip
+# Install from source (or download release tarballs from GitHub Releases)
+cargo install --git https://github.com/studio2201/snip
 
 # Audit staged git diff
 git diff --staged | snip audit
