@@ -115,8 +115,9 @@ pub fn run_server() -> Result<i32, String> {
             "initialize" => {
                 println!(
                     "{{\"jsonrpc\":\"2.0\",\"id\":{},\"result\":{{\"protocolVersion\":\"2024-11-05\",\
-                     \"capabilities\":{{\"tools\":{{}}}},\"serverInfo\":{{\"name\":\"snip\",\"version\":\"0.2.1\"}}}}}}",
-                    id
+                     \"capabilities\":{{\"tools\":{{}}}},\"serverInfo\":{{\"name\":\"snip\",\"version\":\"{}\"}}}}}}",
+                    id,
+                    env!("CARGO_PKG_VERSION")
                 );
             }
             "notifications/initialized" => {
